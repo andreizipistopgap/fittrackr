@@ -1,8 +1,7 @@
 package com.killua.fittrackr.dto;
 
-public record ExerciseResponse (
-    String name,
-    String muscleGroup
+public record ExerciseResponse(
+        String name,
+        String muscleGroup
 ) {
 }
-

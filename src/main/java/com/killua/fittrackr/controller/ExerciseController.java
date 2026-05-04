@@ -1,9 +1,13 @@
 package com.killua.fittrackr.controller;
 
+import com.killua.fittrackr.dto.CreateExerciseRequest;
 import com.killua.fittrackr.dto.ExerciseResponse;
 import com.killua.fittrackr.service.ExerciseService;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
@@ -19,5 +23,10 @@ public class ExerciseController {
     @GetMapping("/api/exercises")
     public List<ExerciseResponse> getExercises() {
         return exerciseService.getExercises();
+    }
+
+    @PostMapping("/api/exercises")
+    public ExerciseResponse createExercise(@RequestBody @Valid CreateExerciseRequest request) {
+        return exerciseService.createExercise(request);
     }
 }
