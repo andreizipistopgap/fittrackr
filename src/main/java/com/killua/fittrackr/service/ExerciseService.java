@@ -2,75 +2,49 @@ package com.killua.fittrackr.service;
 
 import com.killua.fittrackr.dto.CreateExerciseRequest;
 import com.killua.fittrackr.dto.ExerciseResponse;
-import org.springframework.stereotype.Service;
 import com.killua.fittrackr.exception.ExerciseNotFoundException;
+import com.killua.fittrackr.repository.ExerciseRepository;
+import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class ExerciseService {
 
-    private final List<ExerciseResponse> exercises = new ArrayList<>();
-    private int nextId = 1;
+    private final ExerciseRepository exerciseRepository;
 
-    public ExerciseService() {
-        exercises.add(new ExerciseResponse(nextId++, "Bench Press", "CHEST"));
-        exercises.add(new ExerciseResponse(nextId++, "Squat", "LEGS"));
-        exercises.add(new ExerciseResponse(nextId++, "Deadlift", "BACK"));
+    public ExerciseService(ExerciseRepository exerciseRepository) {
+        this.exerciseRepository = exerciseRepository;
     }
 
     public List<ExerciseResponse> getExercises() {
-        return exercises;
-    }
-
-    public ExerciseResponse createExercise(CreateExerciseRequest request) {
-        ExerciseResponse exercise = new ExerciseResponse(
-                nextId++,
-                request.name(),
-                request.muscleGroup()
-        );
-
-        exercises.add(exercise);
-
-        return exercise;
+        return exerciseRepository.findAll();
     }
 
     public ExerciseResponse getExerciseById(int id) {
-        for (ExerciseResponse exercise : exercises) {
-            if (exercise.id() == id) {
-                return exercise;
-            }
-        }
-
-        throw new ExerciseNotFoundException("Exercise not found with id: " + id);
+        return exerciseRepository.findById(id)
+                .orElseThrow(() -> new ExerciseNotFoundException("Exercise not found with id: " + id));
     }
 
-    public void deleteExerciseById(int id) {
-        boolean removed = exercises.removeIf(exercise -> exercise.id() == id);
-
-        if (!removed) {
-            throw new ExerciseNotFoundException("Exercise not found with id: " + id);
-        }
+    public ExerciseResponse createExercise(CreateExerciseRequest request) {
+        return exerciseRepository.save(request.name(), request.muscleGroup());
     }
 
     public ExerciseResponse updateExercise(int id, CreateExerciseRequest request) {
-        for (int i = 0; i < exercises.size(); i++) {
-            ExerciseResponse exercise = exercises.get(i);
+        ExerciseResponse updated = exerciseRepository.update(id, request.name(), request.muscleGroup());
 
-            if (exercise.id() == id) {
-                ExerciseResponse updatedExercise = new ExerciseResponse(
-                        id,
-                        request.name(),
-                        request.muscleGroup()
-                );
-
-                exercises.set(i, updatedExercise);
-
-                return updatedExercise;
-            }
+        if (updated == null) {
+            throw new ExerciseNotFoundException("Exercise not found with id: " + id);
         }
 
-        throw new ExerciseNotFoundException("Exercise not found with id: " + id);
+        return updated;
+    }
+
+    public void deleteExerciseById(int id) {
+        boolean deleted = exerciseRepository.deleteById(id);
+
+        if (!deleted) {
+            throw new ExerciseNotFoundException("Exercise not found with id: " + id);
+        }
     }
 }
