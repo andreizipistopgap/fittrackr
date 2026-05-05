@@ -7,6 +7,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import jakarta.validation.Valid;
 
 import java.util.List;
@@ -28,5 +32,16 @@ public class ExerciseController {
     @PostMapping("/api/exercises")
     public ExerciseResponse createExercise(@RequestBody @Valid CreateExerciseRequest request) {
         return exerciseService.createExercise(request);
+    }
+
+    @GetMapping("/api/exercises/{id}")
+    public ExerciseResponse getExerciseById(@PathVariable int id) {
+        return exerciseService.getExerciseById(id);
+    }
+
+    @DeleteMapping("/api/exercises/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteExerciseById(@PathVariable int id) {
+        exerciseService.deleteExerciseById(id);
     }
 }
