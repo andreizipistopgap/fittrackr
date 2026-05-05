@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.PutMapping;
 import jakarta.validation.Valid;
 
 import java.util.List;
@@ -43,5 +44,13 @@ public class ExerciseController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteExerciseById(@PathVariable int id) {
         exerciseService.deleteExerciseById(id);
+    }
+
+    @PutMapping("/api/exercises/{id}")
+    public ExerciseResponse updateExercise(
+            @PathVariable int id,
+            @RequestBody @Valid CreateExerciseRequest request
+    ) {
+        return exerciseService.updateExercise(id, request);
     }
 }

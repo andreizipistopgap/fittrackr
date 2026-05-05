@@ -53,4 +53,24 @@ public class ExerciseService {
             throw new ExerciseNotFoundException("Exercise not found with id: " + id);
         }
     }
+
+    public ExerciseResponse updateExercise(int id, CreateExerciseRequest request) {
+        for (int i = 0; i < exercises.size(); i++) {
+            ExerciseResponse exercise = exercises.get(i);
+
+            if (exercise.id() == id) {
+                ExerciseResponse updatedExercise = new ExerciseResponse(
+                        id,
+                        request.name(),
+                        request.muscleGroup()
+                );
+
+                exercises.set(i, updatedExercise);
+
+                return updatedExercise;
+            }
+        }
+
+        throw new ExerciseNotFoundException("Exercise not found with id: " + id);
+    }
 }
